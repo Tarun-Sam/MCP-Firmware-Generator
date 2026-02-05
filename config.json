@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "hardware-database": {
+      "command": "python",
+      "args": ["mcp_servers/hardware_database_server.py"],
+      "env": {}
+    },
+    "library-manager": {
+      "command": "python",
+      "args": ["mcp_servers/library_manager_server.py"],
+      "env": {}
+    },
+    "code-quality": {
+      "command": "python",
+      "args": ["mcp_servers/code_quality_server.py"],
+      "env": {}
+    }
+  }
+}
