@@ -1,0 +1,55 @@
+# =====================
+# Python
+# =====================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# =====================
+# Virtual Environments
+# =====================
+venv/
+env/
+myenv/
+.env
+
+# =====================
+# FastAPI / Web
+# =====================
+*.log
+
+# =====================
+# PlatformIO / ESP32
+# =====================
+.platformio/
+.pio/
+build/
+dist/
+
+# =====================
+# Node / Frontend (if any)
+# =====================
+node_modules/
+
+# =====================
+# IDEs / Editors
+# =====================
+.vscode/
+.idea/
+.qoder/
+
+# =====================
+# OS Files
+# =====================
+.DS_Store
+Thumbs.db
+
+# =====================
+# Backups
+# =====================
+*.old
+*.bak
+*backup*
