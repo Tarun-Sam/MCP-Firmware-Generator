@@ -53,19 +53,23 @@ The system follows a modular, multi-stage pipeline:
 ---
 
 ## Project Structure
+
+```text
 MCP-Firmware-Generator/
 ├── main.py
 ├── mcp_client.py
 ├── models.py
 ├── config.json
 ├── requirements.txt
-├── mcp_servers/
-├── utils/
-├── static/
-│ └── index.html
+├── FIXES_APPLIED.md
 ├── esp32_project/
-├── tests/
-│ ├── test_api_response.py
-│ └── test_phase8.py
-└── FIXES_APPLIED.md
+│   └── README.md
+├── mcp_servers/
+├── static/
+│   └── index.html
+├── utils/
+└── tests/
+    ├── test_api_response.py
+    └── test_phase8.py
+```
 
