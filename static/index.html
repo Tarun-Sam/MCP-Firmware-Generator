@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Firmware Generator - Phase 6 Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* IMPROVEMENT: How It Works section */
+        .how-it-works {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 30px;
+            margin: 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .how-it-works h2 {
+            font-size: 1.4em;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+        }
+
+        .step-card h3 {
+            font-size: 1.05em;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .step-card p {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* LEFT PANEL - INPUT */
+        .input-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        /* IMPROVEMENT: Helper text styling */
+        .helper-text {
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+            margin-top: -4px;
+        }
+
+        textarea, input[type="text"], input[type="number"], select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+            border-color: #667eea;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 0.85em;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* MODAL - CLARIFYING QUESTIONS */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .question-item {
+            margin-bottom: 20px;
+        }
+
+        .question-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        /* OPTIONS */
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .option-item label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* RIGHT PANEL - OUTPUT */
+        .output-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* IMPROVEMENT: Enhanced empty state */
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 0.95em;
+            color: #999;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .empty-state-steps {
+            margin-top: 25px;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .empty-state-steps li {
+            margin-bottom: 8px;
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        /* PROGRESS BAR */
+        .progress-container {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-text {
+            font-size: 1.1em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* CODE DISPLAY - IMPROVEMENT: Better monospace formatting and scrolling */
+        #codeDisplay {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 600px;
+            white-space: pre;
+            word-wrap: normal;
+            margin-bottom: 15px;
+        }
+
+        /* IMPROVEMENT: Better scrollbar for code display */
+        #codeDisplay::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        #codeDisplay::-webkit-scrollbar-track {
+            background: #2d2d2d;
+            border-radius: 8px;
+        }
+
+        #codeDisplay::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 8px;
+        }
+
+        #codeDisplay::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* QUALITY METRICS */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .quality-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+
+        .quality-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .quality-good {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .quality-warning {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .issues-section {
+            margin-top: 20px;
+        }
+
+        .issues-section h3 {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .issue-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .issue-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .issue-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .issue-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        /* HARDWARE INFO */
+        .hardware-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .hardware-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .hardware-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hardware-value {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* DOCUMENTATION */
+        #docsDisplay {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95em;
+            line-height: 1.8;
+            color: #333;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🚀 MCP Firmware Generator</h1>
+            <p>AI-Powered Microcontroller Code Generation with Quality Analysis</p>
+        </div>
+
+        <!-- IMPROVEMENT: How It Works Section -->
+        <div class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Describe Your Project</h3>
+                    <p>Enter what you want your microcontroller to do. Be specific about sensors, outputs, and behavior.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>AI Generates Code</h3>
+                    <p>Our AI creates optimized firmware code with quality checks and hardware compatibility analysis.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Download & Deploy</h3>
+                    <p>Get production-ready code with documentation, compile it, and upload to your board.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="content">
+            <!-- LEFT PANEL: INPUT -->
+            <div class="input-panel">
+                <div class="section-title">📝 Project Configuration</div>
+
+                <!-- Project Description -->
+                <div class="form-group">
+                    <label for="prompt">Project Description</label>
+                    <!-- IMPROVEMENT: Better placeholder text with examples -->
+                    <textarea 
+                        id="prompt" 
+                        placeholder="Example: Create a temperature monitoring system using DHT22 sensor on pin D4. Display readings on 16x2 LCD and trigger a relay on pin D7 when temperature exceeds 30°C. Update every 2 seconds."
+                        rows="6"
+                    ></textarea>
+                    <span class="helper-text">💡 Tip: Include hardware details (board type, pins, sensors), desired behavior, and timing requirements for best results.</span>
+                </div>
+
+                <!-- Generation Mode -->
+                <div class="form-group">
+                    <label for="mode">Generation Mode</label>
+                    <select id="mode" onchange="updateMode()">
+                        <option value="standard">Standard (Direct Generation)</option>
+                        <option value="clarify">Interactive (Ask Clarifying Questions)</option>
+                    </select>
+                    <span class="helper-text">Interactive mode helps refine your requirements through guided questions.</span>
+                </div>
+
+                <!-- Options -->
+                <div class="form-group">
+                    <label>Advanced Options</label>
+                    <div class="options-group">
+                        <div class="option-item">
+                            <input type="checkbox" id="compileOption" checked>
+                            <label for="compileOption">Validate code compilation</label>
+                        </div>
+                        <div class="option-item">
+                            <input type="checkbox" id="docsOption" checked>
+                            <label for="docsOption">Generate documentation</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button class="btn-primary" onclick="startGeneration()">
+                        ✨ Generate Code
+                    </button>
+                    <button class="btn-secondary" onclick="clearAll()">
+                        🔄 Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: OUTPUT -->
+            <div class="output-panel">
+                <div class="section-title">📊 Results</div>
+
+                <!-- IMPROVEMENT: Enhanced empty state with clearer messaging -->
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">💡</div>
+                    <h3>Ready to Generate Code</h3>
+                    <p>Your AI-generated firmware will appear here with quality analysis, hardware compatibility checks, and documentation.</p>
+                    <ol class="empty-state-steps">
+                        <li>✏️ Describe your project in detail</li>
+                        <li>⚙️ Choose generation mode and options</li>
+                        <li>🚀 Click "Generate Code" to begin</li>
+                    </ol>
+                </div>
+
+                <!-- PROGRESS BAR -->
+                <div id="progressContainer" class="progress-container">
+                    <div class="progress-text" id="progressText">Generating code...</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="spinner"></div>
+                </div>
+
+                <!-- RESULT TABS -->
+                <div class="tabs" id="resultTabs" style="display: none;">
+                    <button class="tab-button active" onclick="switchTab('code')">📄 Generated Code</button>
+                    <button class="tab-button" onclick="switchTab('analysis')">🔍 Analysis</button>
+                    <button class="tab-button" onclick="switchTab('hardware')">🔧 Hardware</button>
+                    <button class="tab-button" onclick="switchTab('docs')">📖 Documentation</button>
+                </div>
+
+                <!-- TAB CONTENTS -->
+                <div id="codeTab" class="tab-content active">
+                    <pre id="codeDisplay"></pre>
+                    <div class="action-buttons">
+                        <button class="btn-primary btn-small" onclick="downloadCode()">
+                            💾 Download Code (.cpp)
+                        </button>
+                        <button class="btn-secondary btn-small" onclick="copyToClipboard()">
+                            📋 Copy to Clipboard
+                        </button>
+                    </div>
+                </div>
+
+                <div id="analysisTab" class="tab-content">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Code Quality</div>
+                            <div class="metric-value">
+                                <span id="qualityScore" class="quality-badge quality-excellent">--</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Memory Usage</div>
+                            <div class="metric-value" id="memoryUsage">--%</div>
+                        </div>
+                    </div>
+
+                    <div class="issues-section">
+                        <h3>Issues</h3>
+                        <div id="issuesList"></div>
+                    </div>
+
+                    <div class="issues-section">
+                        <h3>Warnings</h3>
+                        <div id="warningsList"></div>
+                    </div>
+                </div>
+
+                <div id="hardwareTab" class="tab-content">
+                    <h3 style="margin-bottom: 20px; color: #333; font-size: 1.1em;">Board Information</h3>
+                    <div class="hardware-grid">
+                        <div class="hardware-item">
+                            <div class="hardware-label">Board</div>
+                            <div class="hardware-value" id="boardName">--</div>
+                        </div>
+                        <div class="hardware-item">
+                            <div class="hardware-label">Flash</div>
+                            <div class="hardware-value" id="flashMemory">--</div>
+                        </div>
+                        <div class="hardware-item">
+                            <div class="hardware-label">RAM</div>
+                            <div class="hardware-value" id="ramMemory">--</div>
+                        </div>
+                        <div class="hardware-item">
+                            <div class="hardware-label">GPIO Pins</div>
+                            <div class="hardware-value" id="gpioPins">--</div>
+                        </div>
+                        <div class="hardware-item">
+                            <div class="hardware-label">UART</div>
+                            <div class="hardware-value" id="uartPorts">--</div>
+                        </div>
+                        <div class="hardware-item">
+                            <div class="hardware-label">I2C</div>
+                            <div class="hardware-value" id="i2cPorts">--</div>
+                        </div>
+                        <div class="hardware-item">
+                            <div class="hardware-label">SPI</div>
+                            <div class="hardware-value" id="spiPorts">--</div>
+                        </div>
+                        <div class="hardware-item">
+                            <div class="hardware-label">PWM</div>
+                            <div class="hardware-value" id="pwmChannels">--</div>
+                        </div>
+                    </div>
+
+                    <div class="issues-section">
+                        <h3>Detected Libraries</h3>
+                        <div id="librariesList"></div>
+                    </div>
+                </div>
+
+                <div id="docsTab" class="tab-content">
+                    <div id="docsDisplay">No documentation available</div>
+                    <div class="action-buttons">
+                        <button class="btn-primary btn-small" onclick="downloadDocs()">
+                            💾 Download Docs (.md)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CLARIFYING QUESTIONS -->
+    <div id="refinementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Clarifying Questions</div>
+            <div class="modal-subtitle">Please provide additional details to refine your code generation</div>
+            <div id="questionsContainer"></div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="submitAnswers()">Submit & Generate</button>
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'standard';
+        let currentQuestions = [];
+        let currentPrompt = '';
+
+        // TAB SWITCHING
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // UPDATE MODE
+        function updateMode() {
+            currentMode = document.getElementById('mode').value;
+        }
+
+        // COPY TO CLIPBOARD - IMPROVEMENT: Added copy functionality
+        function copyToClipboard() {
+            if (!window.currentCode) return;
+            
+            navigator.clipboard.writeText(window.currentCode).then(() => {
+                // Visual feedback
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✓ Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy to clipboard');
+            });
+        }
+
+        // START GENERATION
+        async function startGeneration() {
+            const prompt = document.getElementById('prompt').value.trim();
+            
+            if (!prompt) {
+                alert('Please enter a project description');
+                return;
+            }
+
+            currentPrompt = prompt;
+
+            if (currentMode === 'clarify') {
+                // Fetch clarifying questions
+                await fetchClarifyingQuestions(prompt);
+            } else {
+                // Generate directly
+                await generateCode(prompt);
+            }
+        }
+
+        // FETCH CLARIFYING QUESTIONS (PHASE 6)
+        async function fetchClarifyingQuestions(prompt) {
+            showProgress(true, 'Preparing questions...');
+
+            try {
+                const response = await fetch('/api/clarify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description: prompt })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                currentQuestions = result.questions || [];
+
+                showProgress(false);
+                showQuestionsModal(currentQuestions);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error fetching questions: ' + error.message);
+                showProgress(false);
+            }
+        }
+
+        // SHOW QUESTIONS MODAL
+        function showQuestionsModal(questions) {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.innerHTML = `
+                    <label>${index + 1}. ${question}</label>
+                    <input type="text" 
+                        id="answer-${index}" 
+                        placeholder="Your answer..." 
+                        style="width: 100%;">
+                `;
+                container.appendChild(questionDiv);
+            });
+
+            document.getElementById('refinementModal').classList.add('active');
+        }
+
+        // CLOSE MODAL
+        function closeModal() {
+            document.getElementById('refinementModal').classList.remove('active');
+        }
+
+        // SUBMIT ANSWERS (PHASE 6)
+        async function submitAnswers() {
+            const answers = {};
+            currentQuestions.forEach((question, index) => {
+                answers[question] = document.getElementById(`answer-${index}`).value;
+            });
+
+            // Check if all answers provided
+            if (Object.values(answers).some(a => !a.trim())) {
+                alert('Please answer all questions');
+                return;
+            }
+
+            closeModal();
+            
+            // Generate code with refined prompt
+            await generateCode(currentPrompt, answers);
+        }
+
+        // GENERATE CODE
+        async function generateCode(prompt, refinementAnswers = null) {
+            showProgress(true, 'Generating code...');
+            showEmptyState(false);
+
+            try {
+                const payload = {
+                    description: prompt,
+                    compile: document.getElementById('compileOption').checked,
+                    generate_docs: document.getElementById('docsOption').checked,
+                    context: refinementAnswers ? JSON.stringify(refinementAnswers) : null
+                };
+
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 30;
+                    progress = Math.min(progress, 90);
+                    updateProgress(progress);
+                }, 300);
+
+                const response = await fetch('/api/generate-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                clearInterval(progressInterval);
+                updateProgress(100);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                displayResults(result);
+
+                setTimeout(() => showProgress(false), 500);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error generating code: ' + error.message);
+                showProgress(false);
+            }
+        }
+
+        // DISPLAY RESULTS
+        function displayResults(result) {
+            // Show tabs
+            document.getElementById('resultTabs').style.display = 'flex';
+            document.getElementById('emptyState').style.display = 'none';
+
+            // CODE TAB
+            const codeDisplay = document.getElementById('codeDisplay');
+            codeDisplay.innerHTML = escapeHtml(result.generated_code || '// No code generated');
+
+            // ANALYSIS TAB
+            if (result.code_quality_score !== undefined) {
+                const score = result.code_quality_score;
+                document.getElementById('qualityScore').textContent = `${score}/100`;
+                document.getElementById('qualityScore').className = 'quality-badge ' + 
+                    (score >= 80 ? 'quality-excellent' : score >= 60 ? 'quality-good' : 'quality-warning');
+            }
+
+            if (result.memory_usage !== undefined) {
+                document.getElementById('memoryUsage').textContent = result.memory_usage.toFixed(2) + '%';
+            }
+
+            const issuesList = document.getElementById('issuesList');
+            if (result.quality_issues && result.quality_issues.length > 0) {
+                issuesList.innerHTML = result.quality_issues.map(issue => 
+                    `<div class="issue-item issue-error">❌ ${issue}</div>`
+                ).join('');
+            } else {
+                issuesList.innerHTML = '<div class="issue-item issue-success">✓ No issues detected</div>';
+            }
+
+            const warningsList = document.getElementById('warningsList');
+            if (result.quality_warnings && result.quality_warnings.length > 0) {
+                warningsList.innerHTML = result.quality_warnings.map(warning => 
+                    `<div class="issue-item issue-warning">⚠️ ${warning}</div>`
+                ).join('');
+            } else {
+                warningsList.innerHTML = '<div class="issue-item issue-success">✓ No warnings</div>';
+            }
+
+            // HARDWARE TAB
+            if (result.hardware_info) {
+                const hw = result.hardware_info;
+                document.getElementById('boardName').textContent = hw.name || '--';
+                document.getElementById('flashMemory').textContent = (hw.flash_mb || '--') + ' MB';
+                document.getElementById('ramMemory').textContent = (hw.ram_kb || '--') + ' KB';
+                document.getElementById('gpioPins').textContent = hw.gpio_pins || '--';
+                document.getElementById('uartPorts').textContent = hw.uart_ports || '--';
+                document.getElementById('i2cPorts').textContent = hw.i2c_ports || '--';
+                document.getElementById('spiPorts').textContent = hw.spi_ports || '--';
+                document.getElementById('pwmChannels').textContent = hw.pwm_channels || '--';
+            }
+
+            if (result.detected_libraries) {
+                const libsList = document.getElementById('librariesList');
+                libsList.innerHTML = result.detected_libraries.map(lib => 
+                    `<div class="issue-item issue-success">📦 ${lib}</div>`
+                ).join('');
+            }
+
+            // DOCS TAB
+            if (result.documentation) {
+                document.getElementById('docsDisplay').innerHTML = (result.documentation.content || result.documentation).replace(/\n/g, '<br>');
+            }
+
+            // Store for download
+            window.currentCode = result.generated_code;
+            window.currentDocs = result.documentation;
+        }
+
+        // SHOW/HIDE PROGRESS
+        function showProgress(show, text = '') {
+            const container = document.getElementById('progressContainer');
+            if (show) {
+                container.classList.add('active');
+                if (text) document.getElementById('progressText').textContent = text;
+            } else {
+                container.classList.remove('active');
+            }
+        }
+
+        // UPDATE PROGRESS
+        function updateProgress(percent) {
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // SHOW/HIDE EMPTY STATE
+        function showEmptyState(show) {
+            const emptyState = document.getElementById('emptyState');
+            if (show) {
+                emptyState.style.display = 'block';
+                document.getElementById('resultTabs').style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // DOWNLOAD CODE
+        function downloadCode() {
+            if (!window.currentCode) return;
+            
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(window.currentCode));
+            element.setAttribute('download', 'firmware.cpp');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // DOWNLOAD DOCS
+        function downloadDocs() {
+            if (!window.currentDocs) return;
+            
+            const docsText = typeof window.currentDocs === 'string' ? 
+                window.currentDocs : window.currentDocs.content || '';
+            
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/markdown;charset=utf-8,' + encodeURIComponent(docsText));
+            element.setAttribute('download', 'README.md');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // CLEAR ALL
+        function clearAll() {
+            document.getElementById('prompt').value = '';
+            document.getElementById('mode').value = 'standard';
+            showEmptyState(true);
+            showProgress(false);
+            currentMode = 'standard';
+        }
+
+        // ESCAPE HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // CLOSE MODAL ON ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // CLOSE MODAL ON OUTSIDE CLICK
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('refinementModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
